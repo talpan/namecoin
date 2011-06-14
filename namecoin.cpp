@@ -617,12 +617,6 @@ Value name_firstupdate(const Array& params, bool fHelp)
 
     CWalletTx wtx;
     wtx.nVersion = NAMECOIN_TX_VERSION;
-    vector<unsigned char> strPubKey = GetKeyFromKeyPool();
-    CScript scriptPubKeyOrig;
-    scriptPubKeyOrig.SetBitcoinAddress(strPubKey);
-    CScript scriptPubKey;
-    scriptPubKey << OP_NAME_FIRSTUPDATE << vchName << vchRand << vchValue << OP_2DROP << OP_2DROP;
-    scriptPubKey += scriptPubKeyOrig;
 
     CRITICAL_BLOCK(cs_main)
     {
@@ -668,6 +662,13 @@ Value name_firstupdate(const Array& params, bool fHelp)
         {
             throw runtime_error("previous transaction is not in the wallet");
         }
+
+	    vector<unsigned char> strPubKey = GetKeyFromKeyPool();
+	    CScript scriptPubKeyOrig;
+    	scriptPubKeyOrig.SetBitcoinAddress(strPubKey);
+	    CScript scriptPubKey;
+    	scriptPubKey << OP_NAME_FIRSTUPDATE << vchName << vchRand << vchValue << OP_2DROP << OP_2DROP;
+	    scriptPubKey += scriptPubKeyOrig;
 
         CWalletTx& wtxIn = mapWallet[wtxInHash];
         vector<unsigned char> vchHash;
