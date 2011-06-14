@@ -1443,7 +1443,7 @@ bool CNamecoinHooks::ConnectInputs(CTxDB& txdb,
             if (mapNamePending[vvchArgs[0]].count(tx.GetHash()))
                 mapNamePending[vvchArgs[0]].erase(tx.GetHash());
             else
-                printf("ConnectInputsHook() : connecting inputs on %s which was not in pending - must be someone elses",
+                printf("ConnectInputsHook() : connecting inputs on %s which was not in pending - must be someone elses\n",
                         tx.GetHash().GetHex().c_str());
         }
     }
