@@ -274,8 +274,12 @@ Value getblockbycount(const Array& params, bool fHelp)
 
     string blkname = strprintf("blk%d", height);
 
+    CBlock block;
     CBlockIndex* pindex;
     bool found = false;
+
+    CRITICAL_BLOCK(cs_main)
+    {
 
     for (map<uint256, CBlockIndex*>::iterator mi = mapBlockIndex.begin();
          mi != mapBlockIndex.end(); ++mi)
@@ -292,9 +296,9 @@ Value getblockbycount(const Array& params, bool fHelp)
             "getblockbycount height\n"
             "Dumps the block existing at specified height");
 
-    CBlock block;
     block.ReadFromDisk(pindex);
     block.BuildMerkleTree();
+    }
 
     return BlockToValue(block);
 }
@@ -309,6 +313,10 @@ Value getblockbyhash(const Array& params, bool fHelp)
 
     uint256 hash;
     hash.SetHex(params[0].get_str());
+    CBlock block;
+
+    CRITICAL_BLOCK(cs_main)
+    {
 
     map<uint256, CBlockIndex*>::iterator mi = mapBlockIndex.find(hash);
     if (mi == mapBlockIndex.end())
@@ -316,9 +324,9 @@ Value getblockbyhash(const Array& params, bool fHelp)
 
     CBlockIndex* pindex = (*mi).second;
 
-    CBlock block;
     block.ReadFromDisk(pindex);
     block.BuildMerkleTree();
+    }
 
     return BlockToValue(block);
 }
